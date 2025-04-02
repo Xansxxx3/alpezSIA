@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 
 import com.example.alpez.Entity.UserEntity;
@@ -28,6 +29,12 @@ public class JwtUtil {
         return createToken(claims, String.valueOf(user.getUserId()));
     }
 
+    public String generateToken(String email) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("email", email);
+        return createToken(claims, email);
+    }
+
     // public String generateToken(AdminUserEntity admin) {
     //     Map<String, Object> claims = new HashMap<>();
     //     claims.put("email", admin.getEmail());
@@ -35,6 +42,14 @@ public class JwtUtil {
     //     claims.put("role", admin.getRole()); // Specify admin role
     //     return createToken(claims, String.valueOf(admin.getadminId()));
     // }
+    public String generateToken(OAuth2User oAuth2User) {
+        return Jwts.builder()
+                .setSubject(oAuth2User.getName())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
+                .signWith(secretKey)
+                .compact();
+    }
 
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()

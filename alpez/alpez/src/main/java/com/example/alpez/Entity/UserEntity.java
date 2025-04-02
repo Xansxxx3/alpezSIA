@@ -1,5 +1,7 @@
 package com.example.alpez.Entity;
 
+import java.util.Optional;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,13 +18,13 @@ public class UserEntity {
     @Column(name = "user_id")
     private int userId;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = true)
     private String name;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password", nullable = true)
     private String password;
 
 
@@ -38,6 +40,9 @@ public class UserEntity {
         this.password = password;        
     }
 
+    public static boolean isEmpty(Optional<UserEntity> user) {
+        return !user.isPresent(); // ✅ Inverts `isPresent()`
+    }
     public int getUserId() {
         return userId;
     }

@@ -13,9 +13,3 @@ public class AlpezApplication {
 }
 
 
-
-// <dependency>
-// 			<groupId>org.springframework.boot</groupId>
-// 			<artifactId>spring-boot-starter-oauth2-client</artifactId>
-// 		</dependency>
-		

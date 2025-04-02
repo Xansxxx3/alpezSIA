@@ -39,7 +39,7 @@ public class UserService {
 
     public String authenticateUser(String email, String password) {
         System.out.println("Authenticating user with email: " + email); 
-        UserEntity user = userRepo.findByEmail(email); 
+        UserEntity user = userRepo.getByEmail(email); 
     
             if (user != null) {
                 System.out.println("User found: " + user.getEmail()); 
