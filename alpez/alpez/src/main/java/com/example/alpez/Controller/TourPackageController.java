@@ -25,7 +25,7 @@ public class TourPackageController {
 
     @GetMapping("/print")
     public String print(){
-        return "I miss you!";
+        return "I dont you!";
     }
 
     //CREATE

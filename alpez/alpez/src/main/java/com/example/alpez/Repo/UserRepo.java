@@ -8,4 +8,8 @@ import com.example.alpez.Entity.UserEntity;
 @Repository
 public interface UserRepo extends JpaRepository<UserEntity, Integer> {
 
+    UserEntity findByEmail(String email);
+  
+    boolean existsByEmail(String email);
+
 }

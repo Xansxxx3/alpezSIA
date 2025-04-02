@@ -1,9 +1,12 @@
 package com.example.alpez.Controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.alpez.Auth.JwtUtil;
 import com.example.alpez.Entity.UserEntity;
 import com.example.alpez.Service.UserService;
 
@@ -23,6 +27,8 @@ import com.example.alpez.Service.UserService;
 public class UserController {
     @Autowired
     UserService userService;
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @GetMapping("/print")
     public String print(){
@@ -36,6 +42,22 @@ public class UserController {
     }
 
     //READ
+
+     @PostMapping("/login")
+    public ResponseEntity<Map<String, Object>> login(@RequestBody UserEntity user) {    
+        String token = userService.authenticateUser(user.getEmail(), user.getPassword());
+        int id = Integer.parseInt(jwtUtil.extractUserId(token));
+        String name = jwtUtil.extractUsername(token);
+
+        System.out.print("Logged in successfully with email: " + user.getEmail());
+    
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", token);
+        response.put("id", id);
+        response.put("name", name);
+        return ResponseEntity.ok(response);
+    }
+    
     @GetMapping("/getAll")
     public List<UserEntity> getAllUsers(){
         return userService.getAllUsers();

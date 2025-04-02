@@ -24,8 +24,9 @@ public class TicketEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
+
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "package_id")
     private TourPackageEntity tour;
  
  
