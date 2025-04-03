@@ -1,9 +1,10 @@
 package com.example.alpez.Auth;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -23,7 +24,6 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     private final JwtUtil jwtUtil;
     private final UserRepo userRepo;
 
-    @Autowired
     public OAuth2LoginSuccessHandler(JwtUtil jwtUtil, UserRepo userRepo) {
         this.jwtUtil = jwtUtil;
         this.userRepo = userRepo;
@@ -34,26 +34,32 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
             throws IOException, ServletException {
         
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+        System.out.println("OAuth2 User Attributes: " + oAuth2User.getAttributes());
         String email = oAuth2User.getAttribute("email");
+        String name = oAuth2User.getAttribute("given_name");
+        System.out.println(name);
 
-        // Check if user exists, if not, create one
         Optional<UserEntity> existingUser = userRepo.findByEmail(email);
         UserEntity user;
-if (existingUser.isPresent()) { // ✅ Check if user exists
-    user = existingUser.get();  // ✅ Get the user safely
+if (existingUser.isPresent()) { 
+    user = existingUser.get();  
 } else {
     user = new UserEntity();
     user.setEmail(email);
-    user.setName("vicci");
+    user.setName(name);
     userRepo.save(user);
 }
 
         // Generate JWT token for this user
         String jwtToken = jwtUtil.generateToken(user);
-
-        // Send JWT token as response
+        int userid = user.getUserId();
+        Map<String, Object> jsonResponse = new HashMap<>();
+        jsonResponse.put("token", jwtToken);
+        jsonResponse.put("id", userid);
+        jsonResponse.put("name", name);
         response.setHeader("Authorization", "Bearer " + jwtToken);
-System.out.println(jwtToken);
+        System.out.println(jwtToken);
+        System.out.println(jsonResponse);
         response.sendRedirect("/user/print");
     }
 }
